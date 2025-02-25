@@ -1,5 +1,4 @@
-﻿// Services/CatService.cs
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using CatApi.Repositories;
 using Microsoft.Extensions.Options;

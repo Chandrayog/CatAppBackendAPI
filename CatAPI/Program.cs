@@ -5,15 +5,7 @@ using Microsoft.Win32;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Read the URL from configuration
-var backendUrl = builder.Configuration["BackendAPISettings:Url"];
-
-if (!string.IsNullOrWhiteSpace(backendUrl))
-{
-    // This will override the URL specified in launchsettings.json for the current host
-    builder.WebHost.UseUrls(backendUrl);
-}
-
+var apiSettings = builder.Configuration.GetSection("ApiSettings").Get<ApiSettings>();
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -33,17 +25,22 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<ICatRepository, CatRepository>();
 builder.Services.AddScoped<ICatService, CatService>();
 
-// Retrieve ApiSettings to configure CORS.
-var apiSettings = builder.Configuration.GetSection("ApiSettings").Get<ApiSettings>();
+
+// Configure CORS using the allowed origins from configuration
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend",
-        policy => policy.WithOrigins(apiSettings.FrontendUrl)
-                        .AllowAnyHeader()
-                        .AllowAnyMethod());
+    options.AddPolicy("AllowSpecificOrigins", policy =>
+    {
+        policy.WithOrigins(apiSettings.AllowedOrigins)
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
 });
 
 var app = builder.Build();
+
+// Make sure to apply the CORS policy early in the middleware pipeline.
+app.UseCors("AllowSpecificOrigins");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

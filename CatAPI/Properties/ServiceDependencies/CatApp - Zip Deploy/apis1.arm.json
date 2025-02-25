@@ -97,11 +97,11 @@
               "type": "Microsoft.ApiManagement/service/apis",
               "name": "cat-app-api/CatAPI",
               "properties": {
-                "displayName": "CatAPI",
+                "displayName": "CatAPI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
                 "apiRevision": "1",
-                "description": null,
-                "subscriptionRequired": true,
-                "serviceUrl": null,
+                "description": "test",
+                "subscriptionRequired": false,
+                "serviceUrl": "https://catapp-dbd4hzgsc6f2ajdz.canadacentral-01.azurewebsites.net",
                 "path": "catapp",
                 "protocols": [
                   "https"
